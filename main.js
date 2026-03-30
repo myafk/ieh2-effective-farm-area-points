@@ -215,7 +215,13 @@ function recalculate()
     let breatheEff = 0;
     let boonEff = 0;
     if (state.breatheLevel < MAX_BREATHE) {
-        breatheEff = checkUpgradeEff('breatheLevel') / breatheCost(state.breatheLevel);
+        const bEff = checkUpgradeEff('breatheLevel');
+        //Some time breathe can be useless (if wave maxed)
+        if (bEff > state.totalEffectiveTime) {
+            breatheEff = checkUpgradeEff('breatheLevel') / breatheCost(state.breatheLevel);
+        } else {
+            breatheEff = null;
+        }
     }
     if (state.boonLevel < MAX_BOON) {
         boonEff = checkUpgradeEff('boonLevel') / boonCost(state.boonLevel);
