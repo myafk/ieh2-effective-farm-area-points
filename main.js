@@ -222,10 +222,10 @@ function recalculate()
     }
     if (breatheEff > boonEff) {
         document.getElementById(`recommended_upgrade`).innerText =
-            `Breathe - ${getSmartValue(breatheEff / boonEff)} times more effective that breathe`;
+            `Breathe - ${getSmartValue(breatheEff / boonEff)} times more effective than boon`;
     } else if (boonEff > breatheEff) {
         document.getElementById(`recommended_upgrade`).innerText =
-            `Boon - ${getSmartValue(boonEff / breatheEff)} times more effective that boon`;
+            `Boon - ${getSmartValue(boonEff / breatheEff)} times more effective than breathe`;
     }
 
     //Effective upgrade - clone state, replace some values, calculate state again
