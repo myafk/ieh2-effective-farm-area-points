@@ -1,0 +1,33 @@
+.help-text {
+    padding: 0 15px 0 5px;
+}
+
+.input-div {
+    width: 90px;
+}
+
+#area-progression {
+    width: 50%;
+    margin-right: 30px;
+}
+
+#tables {
+    margin-top: 20px;
+}
+
+#tables > div {
+    display: inline-block;
+}
+
+#tables #sub-tables > div {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.points span {
+    padding-left: 15px;
+}
+
+.points #left_points, .points #current_points {
+    padding-left: 5px;
+}
