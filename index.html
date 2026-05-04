@@ -3,54 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <title>IEH 2 - Effective farming area points</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="main.css">
     <script src="main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1>IEH 2 - Effective farming area points</h1>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="area-tab" data-bs-toggle="tab" data-bs-target="#area-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Area</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="dungeon-tab" data-bs-toggle="tab" data-bs-target="#dungeon-tab-pane" type="button" role="tab" aria-controls="dungeon-tab-pane" aria-selected="false">Dungeon (WIP)</button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="area-tab-pane" role="tabpanel" tabindex="0">
+    <h1>IEH 2 - Effective farming area points</h1>
 
-<div id="ieh-optimize-area">
-  <div class="upgrade_levels input-group align-items-center">
-    <label for="prestige_level" class="input-group-text">Prestige level</label>
-    <div class="input-div">
-      <input type="number" id="prestige_level" class="prestige_level form-control" value="0" />
+    <div id="ieh-optimize-area">
+      <div class="upgrade_levels input-group align-items-center">
+        <label for="prestige_level" class="input-group-text">Prestige level</label>
+        <div class="input-div">
+          <input type="number" id="prestige_level" class="prestige_level form-control" value="0" />
+        </div>
+        <span id="prestige_level_points" title="Next upgrade cost" class="form-text help-text"></span>
+        <label for="breathe_level" class="input-group-text">Breathe level</label>
+        <div class="input-div">
+          <input type="number" id="breathe_level" class="breathe_level form-control" value="0" />
+        </div>
+        <span id="breathe_level_points" title="Next upgrade cost" class="form-text help-text"></span>
+        <label for="boon_level" class="input-group-text">Boon level</label>
+        <div class="input-div">
+          <input type="number" id="boon_level" class="boon_level form-control" value="0" />
+        </div>
+        <span id="boon_level_points" title="Next upgrade cost" class="form-text help-text"></span>
+      </div>
+      <div class="upgrade_levels input-group align-items-center">
+        <label for="effective_points" class="input-group-text" title="The points the table calculates are in the columns: Effective, Effective Time. This essentially means: Calculate how effectively it is to farm {value} points on each difficulty. If you want to be as efficient as possible, you can reduce this value, but then you'll need to constantly change your diff. I recommended: 10">Efficiency points</label>
+        <div class="input-div">
+          <input type="number" id="effective_points" class="effective_points form-control" value="10" />
+        </div>
+        <label for="time_per_wave" class="input-group-text" title="How much the Efficiency Time column will change depending on the number of waves. For example, 0.05 (a number that works for me) means that when you switch to a difficulty where you need to kill 30 waves instead of 10, its effectiveness will be twice as bad (1 + 0.05 * 20).">Time per wave</label>
+        <div class="input-div">
+          <input type="number" id="time_per_wave" step="0.01" class="time_per_wave form-control" value="0.05" />
+        </div>
+        <div class="input-group-text">
+          <label for="include_not_prestiged" title="By default, the average efficiency (in the table footer) is calculated only for open difficulties (based on prestige level). If you enable this checkbox, it will be calculated for all difficulties. This might be helpful if you want to take a more strategic look at the table.">Avg Efficiency include not opened areas</label>
+          <input type="checkbox" style="margin-left: 10px;" id="include_not_prestiged" class="include_not_prestiged form-check-input" value="1" />
+        </div>
+        <div class="input-group-text">
+          <label for="ft_boss" title="Flame tiger boss mod, enable if you have it">FT boss</label>
+          <input type="checkbox" style="margin-left: 10px;" id="ft_boss" class="ft_boss form-check-input" value="1" />
+        </div>
+      </div>
+      <div class="points input-group align-items-center">
+        <label for="need_points" class="input-group-text" title="Points that yoo want to farm">Need points</label>
+        <div class="input-div">
+          <input type="number" id="need_points" class="need_points form-control" value="949" />
+        </div>
+        <span title="Points you are missing (needPoints - totalPoints)">Left points: </span><span id="left_points">0</span>
+        <span title="The current number of points you have not spent (totalPoints - upgradeCosts)">Current points: </span><span id="current_points">0</span>
+      </div>
+      <div id="tables"></div>
     </div>
-    <span id="prestige_level_points" title="Next upgrade cost" class="form-text help-text"></span>
-    <label for="breathe_level" class="input-group-text">Breathe level</label>
-    <div class="input-div">
-      <input type="number" id="breathe_level" class="breathe_level form-control" value="0" />
-    </div>
-    <span id="breathe_level_points" title="Next upgrade cost" class="form-text help-text"></span>
-    <label for="boon_level" class="input-group-text">Boon level</label>
-    <div class="input-div">
-      <input type="number" id="boon_level" class="boon_level form-control" value="0" />
-    </div>
-    <span id="boon_level_points" title="Next upgrade cost" class="form-text help-text"></span>
   </div>
-  <div class="upgrade_levels input-group align-items-center">
-    <label for="effective_points" class="input-group-text" title="The points the table calculates are in the columns: Effective, Effective Time. This essentially means: Calculate how effectively it is to farm {value} points on each difficulty. If you want to be as efficient as possible, you can reduce this value, but then you'll need to constantly change your diff. I recommended: 10">Efficiency points</label>
-    <div class="input-div">
-      <input type="number" id="effective_points" class="effective_points form-control" value="10" />
-    </div>
-    <label for="time_per_wave" class="input-group-text" title="How much the Efficiency Time column will change depending on the number of waves. For example, 0.05 (a number that works for me) means that when you switch to a difficulty where you need to kill 30 waves instead of 10, its effectiveness will be twice as bad (1 + 0.05 * 20).">Time per wave</label>
-    <div class="input-div">
-      <input type="number" id="time_per_wave" step="0.01" class="time_per_wave form-control" value="0.05" />
-    </div>
-    <div class="input-group-text">
-      <label for="include_not_prestiged" title="By default, the average efficiency (in the table footer) is calculated only for open difficulties (based on prestige level). If you enable this checkbox, it will be calculated for all difficulties. This might be helpful if you want to take a more strategic look at the table.">Avg Efficiency include not opened areas</label>
-      <input type="checkbox" style="margin-left: 10px;" id="include_not_prestiged" class="include_not_prestiged form-check-input" value="1" />
+
+  <div class="tab-pane fade show active" id="dungeon-tab-pane" role="tabpanel" tabindex="1">
+    <h1>IEH 2 - Effective farming dungeon points</h1>
+
+    <div id="ieh-optimize-dungeon">
+      <div class="upgrade_levels input-group align-items-center">
+        <label for="d_prestige_level" class="input-group-text">Prestige level</label>
+        <div class="input-div">
+          <input type="number" id="d_prestige_level" class="prestige_level form-control" value="0" />
+        </div>
+        <span id="d_prestige_level_points" title="Next upgrade cost" class="form-text help-text"></span>
+      </div>
+      <div class="upgrade_levels input-group align-items-center">
+        <label for="d_effective_points" class="input-group-text" title="The points the table calculates are in the columns: Effective, Effective Time. This essentially means: Calculate how effectively it is to farm {value} points on each difficulty. If you want to be as efficient as possible, you can reduce this value, but then you'll need to constantly change your diff. I recommended: 10">Efficiency points</label>
+        <div class="input-div">
+          <input type="number" id="d_effective_points" class="effective_points form-control" value="10" />
+        </div>
+        <label for="d_time_per_wave" class="input-group-text" title="How much the Efficiency Time column will change depending on the number of waves. For example, 0.05 (a number that works for me) means that when you switch to a difficulty where you need to kill 30 waves instead of 10, its effectiveness will be twice as bad (1 + 0.05 * 20).">Time per wave</label>
+        <div class="input-div">
+          <input type="number" id="d_time_per_wave" step="0.01" class="time_per_wave form-control" value="0.05" />
+        </div>
+        <div class="input-group-text">
+          <label for="d_include_not_prestiged" title="By default, the average efficiency (in the table footer) is calculated only for open difficulties (based on prestige level). If you enable this checkbox, it will be calculated for all difficulties. This might be helpful if you want to take a more strategic look at the table.">Avg Efficiency include not opened areas</label>
+          <input type="checkbox" style="margin-left: 10px;" id="d_include_not_prestiged" class="include_not_prestiged form-check-input" value="1" />
+        </div>
+        <div class="input-group-text">
+          <label for="d_ft_boss" title="Flame tiger boss mod, enable if you have it">FT boss</label>
+          <input type="checkbox" style="margin-left: 10px;" id="d_ft_boss" class="ft_boss form-check-input" value="1" />
+        </div>
+      </div>
+      <div class="points input-group align-items-center">
+        <label for="d_need_points" class="input-group-text" title="Points that yoo want to farm">Need points</label>
+        <div class="input-div">
+          <input type="number" id="d_need_points" class="need_points form-control" value="949" />
+        </div>
+        <span title="Points you are missing (needPoints - totalPoints)">Left points: </span><span id="d_left_points">0</span>
+        <span title="The current number of points you have not spent (totalPoints - upgradeCosts)">Current points: </span><span id="d_current_points">0</span>
+      </div>
+      <div id="d_tables"></div>
     </div>
   </div>
-  <div class="points input-group align-items-center">
-    <label for="need_points" class="input-group-text" title="Points that yoo want to farm">Need points</label>
-    <div class="input-div">
-      <input type="number" id="need_points" class="need_points form-control" value="949" />
-    </div>
-    <span title="Points you are missing (needPoints - totalPoints)">Left points: </span><span id="left_points">0</span>
-    <span title="The current number of points you have not spent (totalPoints - upgradeCosts)">Current points: </span><span id="current_points">0</span>
-  </div>
-  <div id="tables"></div>
 </div>
 
 </body>
