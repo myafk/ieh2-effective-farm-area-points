@@ -175,7 +175,7 @@ function recalculate(type)
     function calcState(prevState, i) {
         const currentClears = parseFloat(document.getElementById(`${prefix}clears_${i}`).value) || 0;
 
-        const points = getPointsByClear(currentClears);
+        const points = getPointsByClear(type, currentClears);
         const waves = getWavesToDiff(type, i, prevState.breatheLevel);
 
         const pureEffective = (1 / clearsToNextPoint(type, currentClears, prevState.effectivePoints) * 100000000) * (1 + prevState.boonLevel * BOON_BONUS);
@@ -200,10 +200,6 @@ function recalculate(type)
         } else {
             const clearTimeCalc = prevState.timePerWave * waves;
             const factor = clearTimeCalc ? clearTimeCalc : 0.01;
-            if (type == 'dungeon' && i == 3) {
-                console.log(pureEffective);
-                //console.log(clearTimeCalc);
-            }
             effectiveTime = effective / (factor / 0.01);
         }
 
@@ -258,7 +254,6 @@ function recalculate(type)
         document.getElementById(`${prefix}breathe_level_points`).innerText = `Next: ${breatheCost(state.breatheLevel)}`;
         document.getElementById(`${prefix}boon_level_points`).innerText = `Next: ${boonCost(state.boonLevel)}`;
     }
-
     document.getElementById(`${prefix}left_points`).innerText = state.needPoints - state.totalPoints;
     document.getElementById(`${prefix}current_points`).innerText = state.totalPoints
         - prestigeCost(state.prestigeLevel, true)
